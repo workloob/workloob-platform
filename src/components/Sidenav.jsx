@@ -72,12 +72,13 @@ const Sidenav = ({ isSidebarOpen, activeLink, setActive, toggleSidebar }) => {
 
   const userlist = [
     { id: 1, path: "wallet", name: "Wallet", icon: "bi-wallet" },
-    { id: 2, path: "staking", name: "Staking", icon: "bi-coin" },
-    { id: 3, path: "loan", name: "Loan (soon)", icon: "bi-cash-coin" },
+    { id: 2, path: "atm_card", name: "ATM Card", icon: "bi-credit-card" },
+    { id: 3, path: "staking", name: "Staking", icon: "bi-coin" },
     { id: 4, path: "governance", name: "Governance(soon)", icon: "bi-bank" },
-    { id: 5, path: "trade", name: "Trade (soon)", icon: "bi-arrow-left-right" },
-    { id: 6, path: "referrals", name: "Referrals(soon)", icon: "bi-people" },
-    { id: 7, path: "settings", name: "Settings", icon: "bi-gear" },
+    { id: 5, path: "referrals", name: "Referrals(soon)", icon: "bi-people" },
+    { id: 6, path: "settings", name: "Settings", icon: "bi-gear" },
+    // { id: 7, path: "loan", name: "Loan (soon)", icon: "bi-cash-coin" },
+    // { id: 8, path: "trade", name: "Trade (soon)", icon: "bi-arrow-left-right" },
   ];
 
   const location = useLocation();

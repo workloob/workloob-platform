@@ -33,6 +33,7 @@ import Gigdetails from "./Gigdetails";
 import Referrals from "./referrals/Referrals.jsx";
 import Wallet from "./wallet/Wallet.jsx";
 import Userprofile from "./Userprofile.jsx";
+import Atmcard from "./atm-card/Atmcard.jsx";
 
 // Future rootes
 import Trade from "./trade/Trade.jsx";
@@ -160,6 +161,7 @@ const Approutes = () => {
               <Route path="/referrals" element={<Referrals />} />
               <Route path="/trade" element={<Trade />} />
               <Route path="/staking" element={<Stake />} />
+              <Route path="/atm_card" element={<Atmcard />} />
 
               <Route path="/loan" element={<Loan />} />
               <Route path="/loan_portfolio" element={<LoanPortfolio />} />
