@@ -3,6 +3,7 @@ import WorklobJOB from "./abi/WorklobJOB.json";
 import LOBToken from "./abi/LOBToken.json"; // Add the ABI file for LOB token
 import WorkLobStaking from "./abi/WorkLobStaking.json"; // Add the ABI file for LOB token
 import WorklobAIMarketplace from "./abi/WorklobAIMarketplace.json";
+import WorklobATM from "./abi/WorkloobATM.json";
 
 export const JOB_ABI = WorklobJOB.abi;
 export const JOB_CONTRACT_ADDRESS =
@@ -20,6 +21,10 @@ export const WorkLobStaking_address =
 // Worklob AI Market contract
 export const WorkLob_ai_abi = WorklobAIMarketplace.abi;
 export const WorkLob_ai_address = "0x05A5B5f278d8Df7297b128D2C395A372DF7cDAeA";
+
+// Worklob ATM card contract
+export const WorkLob_atm_abi = WorklobATM.abi;
+export const WorkLob_atm_address = "0x968CAd0992D0A055AB132F95838561b19BA4253F";
 
 // Base Sepolia Testnet configuration
 export const BASE_TESTNET_PARAMS = {

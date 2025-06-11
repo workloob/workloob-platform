@@ -10,6 +10,8 @@ const chatRouter = require("./chatRouter");
 const AI_imageRouter = require("./ai-generate-image");
 const profileRouter = require("./Profile");
 const ethPrice = require("./ethPrice");
+const cardRouter = require("./card");
+const webhookRouter = require("./webhook");
 const z = require("zod");
 
 router.use("/user", userRouter);
@@ -20,6 +22,8 @@ router.use("/application", applyJobRouter, buyGigRouter);
 router.use("/chat", chatRouter);
 router.use("/ai_image", AI_imageRouter);
 router.use("/profile", profileRouter);
+router.use("/atm", cardRouter);
+router.use("/atmcard", webhookRouter);
 router.use("/price", ethPrice.router);
 
 module.exports = router;
