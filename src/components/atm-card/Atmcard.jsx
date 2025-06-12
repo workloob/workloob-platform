@@ -26,7 +26,7 @@ const Atmcard = () => {
   const [limitInput, setLimitInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(true);
-  const [cardLinked, setCardLinked] = useState(false);
+  const [cardLinked, setCardLinked] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [walletDropdown, setWalletDropdown] = useState(false);
 

@@ -34,7 +34,7 @@ export default function LinkCard({ wallet }) {
 
   return (
     <div style={{ marginTop: "2rem" }}>
-      <h3>Link Your Card</h3>
+      <h3>Link Your workloob Card</h3>
       <input
         placeholder="Card Number"
         value={cardNumber}

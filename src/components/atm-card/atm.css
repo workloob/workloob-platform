@@ -195,3 +195,88 @@
     flex-direction: column;
   }
 }
+
+/* card linking modal css */
+.linkcard-inputs label {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-size: 14px;
+  gap: 6px;
+}
+
+.cardfull-input {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  width: 100%;
+}
+
+.linkcard-inputs input:focus {
+  border: 1px solid #007bff;
+  outline: none;
+}
+
+.expiry-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.expiry-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expiry-input {
+  width: 50px;
+  text-align: center;
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+.slash {
+  font-size: 20px;
+  color: white;
+}
+
+.cvv-pin-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cvv-pin-label {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-size: 14px;
+  gap: 6px;
+  flex: 1;
+}
+
+.cvv-box-group,
+.pin-box-group {
+  display: flex;
+  gap: 6px;
+}
+
+.cvv-box,
+.pin-box {
+  width: 40px;
+  height: 45px;
+  font-size: 20px;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.cvv-box:focus,
+.pin-box:focus {
+  outline: 2px solid #007bff;
+}

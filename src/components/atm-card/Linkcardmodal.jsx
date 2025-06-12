@@ -4,8 +4,17 @@ import { useSmartWallet } from "../../SmartWallet";
 import { useWallet } from "../WalletContext";
 import { Toaster, toast } from "sonner";
 import Walletmodal from "../Walletmodal";
+import axios from "axios";
+import API_URL from "../../config";
 
 const Linkcardmodal = ({ isOpen, onClose }) => {
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryMonth, setExpiryMonth] = useState("");
+  const [expiryYear, setExpiryYear] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [pin, setPin] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const { walletType, setWalletType } = useWallet();
   const [isWalletmodalOpen, setIsWalletmodalOpen] = useState(false);
   const openWalletmodal = () => setIsWalletmodalOpen(true);
@@ -22,9 +31,25 @@ const Linkcardmodal = ({ isOpen, onClose }) => {
       ? smartWallet
       : {}) || {};
 
-  const handleCopyAddress = () => {
-    navigator.clipboard.writeText(walletAddress);
-    toast.success("Wallet address copied to clipboard!");
+  const handleLink = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(`${API_URL}/api/v1/atm/tokenize`, {
+        card_number: cardNumber,
+        expiry_month: expiryMonth,
+        expiry_year: expiryYear,
+        cvv,
+        pin,
+        email,
+        walletAddress: walletAddress,
+      });
+      alert(`Card linked! Last 4: ${data.cardLast4}`);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert("Failed to link card.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -32,55 +57,112 @@ const Linkcardmodal = ({ isOpen, onClose }) => {
   return (
     <div className="modal" style={modalStyle}>
       <div className="modal-content" style={modalContentStyle}>
-        {/* <Toaster position="top-right" /> */}
-        {connected ? (
-          <>
-            <h3 style={{ textAlign: "center" }}>
-              Send token to your address below
-            </h3>
-            <p className="walllet-address">{walletAddress}</p>
-            <span style={copyIconStyle} onClick={handleCopyAddress}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="currentColor"
-                class="bi bi-copy"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"
+        <>
+          <h3>Link Your Workloob Card</h3>
+          <div className="linkcard-inputs">
+            <label>
+              Workloob Card Number
+              <input
+                type="text"
+                maxLength={16}
+                placeholder="1234 5678 9012 3456"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                className="cardfull-input"
+              />
+            </label>
+
+            <label className="expiry-label">
+              Expiry Date
+              <div className="expiry-container">
+                <input
+                  type="text"
+                  maxLength={2}
+                  placeholder="MM"
+                  value={expiryMonth}
+                  onChange={(e) => setExpiryMonth(e.target.value)}
+                  className="expiry-input"
                 />
-              </svg>
-            </span>
-          </>
-        ) : (
-          <>
-            <h3 style={{ textAlign: "center" }}>
-              Connect wallet to make a deposit
-            </h3>
-            <br />
-            <div style={{ textAlign: "center" }}>
-              <button
-                onClick={() => {
-                  if (connected) {
-                    closeWalletmodal();
-                  } else {
-                    openWalletmodal();
-                  }
-                }}
-                className="modall-button"
-              >
-                Connect Wallet
-              </button>
+                <span className="slash">/</span>
+                <input
+                  type="text"
+                  maxLength={2}
+                  placeholder="YY"
+                  value={expiryYear}
+                  onChange={(e) => setExpiryYear(e.target.value)}
+                  className="expiry-input"
+                />
+              </div>
+            </label>
+
+            <div className="cvv-pin-container">
+              <label className="cvv-pin-label">
+                CVV
+                <div className="cvv-box-group">
+                  {[...Array(3)].map((_, i) => (
+                    <input
+                      key={i}
+                      type="text"
+                      maxLength={1}
+                      value={cvv[i] || ""}
+                      onChange={(e) => {
+                        const newCvv = cvv.split("");
+                        newCvv[i] = e.target.value.replace(/\D/, "");
+                        setCvv(newCvv.join(""));
+                      }}
+                      className="cvv-box"
+                    />
+                  ))}
+                </div>
+              </label>
+
+              <label className="cvv-pin-label">
+                Create PIN
+                <div className="pin-box-group">
+                  {[...Array(4)].map((_, i) => (
+                    <input
+                      key={i}
+                      type="text"
+                      maxLength={1}
+                      value={pin[i] || ""}
+                      onChange={(e) => {
+                        const newPin = pin.split("");
+                        newPin[i] = e.target.value.replace(/\D/, "");
+                        setPin(newPin.join(""));
+                      }}
+                      className="pin-box"
+                    />
+                  ))}
+                </div>
+              </label>
             </div>
-          </>
-        )}
-        <br />
-        <button onClick={onClose} className="closemodall-button">
-          Close
-        </button>
+
+            <label>
+              Email Address
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="cardfull-input"
+              />
+            </label>
+          </div>
+
+          <br />
+
+          <button
+            className="modall-button"
+            onClick={handleLink}
+            disabled={loading}
+          >
+            {loading ? "Linking..." : "Link Card"}
+          </button>
+          <br />
+          <button onClick={onClose} className="closemodall-button">
+            Close
+          </button>
+        </>
       </div>
       <Walletmodal isOpen={isWalletmodalOpen} onClose={closeWalletmodal} />
     </div>
