@@ -39,7 +39,7 @@ const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
           />
 
           <span style={{ color: "#efbe2a" }} className="d-none d-lg-block">
-            WorkLob
+            WorkLoob
           </span>
         </Link>
       </div>

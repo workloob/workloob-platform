@@ -11,7 +11,7 @@ import "./atm.css";
 
 const dummyCardData = {
   cardNumber: "4765367646789889",
-  balance: "0.00",
+  balance: "650.00",
   currency: "USDC",
   cardHolder: "Toluwase John",
   address: "0x9893.....65c148",
@@ -26,7 +26,7 @@ const Atmcard = () => {
   const [limitInput, setLimitInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(true);
-  const [cardLinked, setCardLinked] = useState(true);
+  const [cardLinked, setCardLinked] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [walletDropdown, setWalletDropdown] = useState(false);
 
@@ -55,11 +55,8 @@ const Atmcard = () => {
                   className="h-[90px] w-[70px] object-cover"
                 />
 
-                <span
-                  style={{ color: "#efbe2a" }}
-                  className="d-none d-lg-block"
-                >
-                  WorkLob
+                <span style={{ color: "#efbe2a" }} className="d-lg-block">
+                  WorkLoob
                 </span>
               </div>
               <img src={mastercardLogo} alt="Mastercard logo" />
@@ -76,10 +73,7 @@ const Atmcard = () => {
                     className="h-[90px] w-[70px] object-cover"
                   />
 
-                  <span
-                    style={{ color: "white" }}
-                    className="d-none d-lg-block"
-                  >
+                  <span style={{ color: "white" }} className="d-lg-block">
                     {isVisible ? `${dummyCardData.balance} USDC` : "-- USDC"}
                   </span>
                 </div>
@@ -119,9 +113,19 @@ const Atmcard = () => {
                   alignItems: "center",
                 }}
               >
-                <span>{spendLimit} USDC</span>
+                <span id="spend-limit">
+                  <img
+                    style={{ borderRadius: "50%" }}
+                    src={usdc}
+                    alt=""
+                    height="25"
+                    width="25"
+                    className="object-cover"
+                  />{" "}
+                  {spendLimit} USDC
+                </span>
                 <i
-                  className="bi bi-pencil"
+                  className="bi bi-pencil-square modall-button"
                   onClick={() => {
                     setSpendLimit(null);
                     setLimitInput("");
@@ -143,7 +147,7 @@ const Atmcard = () => {
                   placeholder="Enter limit"
                 />
                 <button
-                  className="wallet-address-btn"
+                  className="modall-button"
                   onClick={() => setSpendLimit(limitInput)}
                 >
                   Set Spend Limit
@@ -160,34 +164,41 @@ const Atmcard = () => {
             {walletConnected && !cardLinked ? (
               <>
                 <button
-                  className="wallet-button"
+                  className="atm-wallet-button"
                   onClick={() => window.open("https://workloob.com", "_blank")}
                 >
                   Request Card
                 </button>
                 <button
-                  className="wallet-button"
+                  className="atm-wallet-button"
                   onClick={() => setModalOpen(true)}
                 >
                   Link your Card
                 </button>
               </>
             ) : !walletConnected ? (
-              <button className="wallet-button">Connect Wallet</button>
+              <>
+                <button className="atm-wallet-button">Connect Wallet</button>
+              </>
             ) : (
-              <div style={{ position: "relative" }}>
-                <div
-                  className="wallet-address-btn"
-                  onClick={() => setWalletDropdown(!walletDropdown)}
-                >
-                  0x98...148 <i className="bi bi-chevron-down"></i>
+              <>
+                <div className="wallet-dropdown-wrapper">
+                  <button
+                    className="atm-wallet-button"
+                    onClick={() => setWalletDropdown(!walletDropdown)}
+                  >
+                    0x9893.....65c148 <i className="bi bi-chevron-down"></i>
+                  </button>
+
+                  {walletDropdown && (
+                    <div className="wallet-address-dropdown">
+                      <button className="change-wallet-btn">
+                        Change Wallet
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {walletDropdown && (
-                  <div className="wallet-address-dropdown">
-                    <button>Change Wallet</button>
-                  </div>
-                )}
-              </div>
+              </>
             )}
           </div>
 
