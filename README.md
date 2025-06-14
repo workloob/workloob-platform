@@ -16,6 +16,9 @@ WorkLob is the ultimate decentralized platform connecting job seekers, employers
 - **Micropayments**:  
   Pay small amounts of ETH for each service use, ensuring cost efficiency and flexibility.
 
+- **Crypto ATM Card**:  
+   WorkLoob is bridging the gap between crypto and real-world spending. We’re building a non-custodial crypto-to-fiat ATM card that lets users spend USDC directly from their wallets at any ATM or POS offline.
+
 - **Blockchain Integration**:  
   A transparent and secure payment system powered by Base blockchain, ensuring trustless and immutable transactions.
 
@@ -24,12 +27,6 @@ WorkLob is the ultimate decentralized platform connecting job seekers, employers
 
 - **Governance**:  
   Decentralized decision-making and voting mechanisms within the WorkLob DAO, allowing stakeholders to influence platform direction and updates.
-
-- **Trading with AI Agent**:  
-  Leverage AI-driven trading agent for automated strategies, data-driven insights, and fast market execution.
-
-- **Lending and Borrowing**:  
-  Decentralized finance (DeFi) solutions enabling users to lend or borrow assets securely with smart contract automation.
 
 ## Project Structure
 
