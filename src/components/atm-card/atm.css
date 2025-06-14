@@ -280,3 +280,11 @@
 .pin-box:focus {
   outline: 2px solid #007bff;
 }
+
+#dropbtn:hover {
+  background-color: #3b6175;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

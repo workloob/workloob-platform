@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Toaster, toast } from "sonner";
 
-const AtmTransactions = () => {
+const AtmTransactions = ({ walletAddress, linked_address }) => {
+  const isAuthorized =
+    walletAddress?.toLowerCase() === linked_address?.toLowerCase();
   const [transactions] = useState([
     {
       date: "2024-08-30",
@@ -71,37 +73,48 @@ const AtmTransactions = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((tx, index) => (
-              <tr key={index}>
-                <td>{tx.date}</td>
-                <td>{tx.amount_usdc} USDC</td>
-                <td>{tx.amount_ngn} NGN</td>
-                <td>{tx.exchange_rate} NGN</td>
-                <td>{tx.fees} USDC</td>
-                <td>
-                  <span style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ whiteSpace: "nowrap" }}>
-                      {truncateTransactionId(tx.transactionId)}
+            {isAuthorized ? (
+              transactions.map((tx, index) => (
+                <tr key={index}>
+                  <td>{tx.date}</td>
+                  <td>{tx.amount_usdc} USDC</td>
+                  <td>{tx.amount_ngn} NGN</td>
+                  <td>{tx.exchange_rate} NGN</td>
+                  <td>{tx.fees} USDC</td>
+                  <td>
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                      <span style={{ whiteSpace: "nowrap" }}>
+                        {truncateTransactionId(tx.transactionId)}
+                      </span>
+                      <button
+                        onClick={() => copyToClipboard(tx.transactionId)}
+                        style={{
+                          marginLeft: "8px",
+                          border: "none",
+                          background: "transparent",
+                          color: "white",
+                          cursor: "pointer",
+                          padding: 0,
+                        }}
+                        title="Copy Transaction ID"
+                      >
+                        <i className="bi bi-clipboard"></i>
+                      </button>
                     </span>
-                    <button
-                      onClick={() => copyToClipboard(tx.transactionId)}
-                      style={{
-                        marginLeft: "8px",
-                        border: "none",
-                        background: "transparent",
-                        color: "white",
-                        cursor: "pointer",
-                        padding: 0,
-                      }}
-                      title="Copy Transaction ID"
-                    >
-                      <i className="bi bi-clipboard"></i>
-                    </button>
-                  </span>
+                  </td>
+                  <td>{tx.status}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  No Transactions
                 </td>
-                <td>{tx.status}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

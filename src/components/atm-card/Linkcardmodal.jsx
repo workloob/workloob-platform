@@ -43,10 +43,10 @@ const Linkcardmodal = ({ isOpen, onClose }) => {
         email,
         walletAddress: walletAddress,
       });
-      alert(`Card linked! Last 4: ${data.cardLast4}`);
+      toast.success(`Card linked! Last 4: ${data.cardLast4}`);
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Failed to link card.");
+      toast.error("Failed to link card.");
     } finally {
       setLoading(false);
     }

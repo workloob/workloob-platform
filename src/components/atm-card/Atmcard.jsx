@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import workloobLogo from "../../assets/img/worklob-logo-cp-no-bg.png";
 import mastercardLogo from "../../assets/img/master-card.png";
 import eyeOpen from "../../assets/img/smart-wallet.png";
@@ -7,6 +7,9 @@ import usdc from "../../assets/img/usdc.png";
 import cardBG from "../../assets/img/atm-bg-use.png";
 import Linkcardmodal from "./Linkcardmodal";
 import AtmTransactions from "./AtmTransactions";
+import { useWeb3 } from "../../Web3Provider";
+import { useSmartWallet } from "../../SmartWallet";
+import { useWallet } from "../WalletContext";
 import "./atm.css";
 
 const dummyCardData = {
@@ -14,7 +17,7 @@ const dummyCardData = {
   balance: "650.00",
   currency: "USDC",
   cardHolder: "Toluwase John",
-  address: "0x9893.....65c148",
+  linked_address: "0x93893EA64dA1311c2993E08B8d92Db57B657c148",
   cvv: "153",
   expiry: "25/28",
   spendLimit: null,
@@ -26,15 +29,46 @@ const Atmcard = () => {
   const [limitInput, setLimitInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(true);
-  const [cardLinked, setCardLinked] = useState(true);
+  const [cardLinked, setCardLinked] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [walletDropdown, setWalletDropdown] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const { walletType, setWalletType } = useWallet();
+  const dropdownRef = useRef();
+
+  // Call both hooks unconditionally
+  const web3 = useWeb3();
+  const smartWallet = useSmartWallet();
+  const { connectWallet, walletAddress, shortenAddress, connected } =
+    (walletType === "metamask"
+      ? web3
+      : walletType === "smartwallet"
+      ? smartWallet
+      : {}) || {};
 
   const formatCardNumber = (number) => {
     return number.replace(/\d{4}(?=.)/g, "$& ");
   };
+
+  useEffect(() => {
+    if (walletAddress) {
+      setWalletConnected(true);
+    } else {
+      setWalletConnected(false);
+    }
+  }, [walletAddress]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -64,7 +98,15 @@ const Atmcard = () => {
 
             <div className="card-middle">
               <div>
-                <p>{dummyCardData.address}</p>
+                <p>
+                  {walletAddress?.toLowerCase() ===
+                  dummyCardData.linked_address.toLowerCase()
+                    ? `${dummyCardData.linked_address.slice(
+                        0,
+                        6
+                      )}...${dummyCardData.linked_address.slice(-4)}`
+                    : "••••••••••••••••••••"}
+                </p>
                 <div className="logo d-flex align-items-center">
                   <img
                     style={{ borderRadius: "50%" }}
@@ -74,7 +116,10 @@ const Atmcard = () => {
                   />
 
                   <span style={{ color: "white" }} className="d-lg-block">
-                    {isVisible ? `${dummyCardData.balance} USDC` : "-- USDC"}
+                    {walletAddress?.toLowerCase() ===
+                      dummyCardData.linked_address.toLowerCase() && isVisible
+                      ? `${dummyCardData.balance} USDC`
+                      : "-- USDC"}
                   </span>
                 </div>
               </div>
@@ -90,9 +135,12 @@ const Atmcard = () => {
 
             <div className="card-digits">
               <p className="cardnumberdigit">
-                {isVisible
-                  ? formatCardNumber(dummyCardData.cardNumber)
-                  : `•••• •••• •••• ${dummyCardData.cardNumber.slice(-4)}`}
+                {walletAddress?.toLowerCase() ===
+                dummyCardData.linked_address.toLowerCase()
+                  ? isVisible
+                    ? formatCardNumber(dummyCardData.cardNumber)
+                    : `•••• •••• •••• ${dummyCardData.cardNumber.slice(-4)}`
+                  : "•••• •••• •••• ••••"}
               </p>
             </div>
 
@@ -146,12 +194,22 @@ const Atmcard = () => {
                   onChange={(e) => setLimitInput(e.target.value)}
                   placeholder="Enter limit"
                 />
-                <button
-                  className="modall-button"
-                  onClick={() => setSpendLimit(limitInput)}
-                >
-                  Set Spend Limit
-                </button>
+                {walletAddress?.toLowerCase() ===
+                dummyCardData.linked_address.toLowerCase() ? (
+                  <button
+                    className="modall-button"
+                    onClick={() => setSpendLimit(limitInput)}
+                  >
+                    Set Spend Limit
+                  </button>
+                ) : (
+                  <button
+                    className="modall-button"
+                    onClick={() => setModalOpen(true)}
+                  >
+                    Link Card
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -178,16 +236,29 @@ const Atmcard = () => {
               </>
             ) : !walletConnected ? (
               <>
-                <button className="atm-wallet-button">Connect Wallet</button>
+                <button onClick={connectWallet} className="atm-wallet-button">
+                  Connect Wallet
+                </button>
               </>
             ) : (
               <>
-                <div className="wallet-dropdown-wrapper">
+                <button className="atm-wallet-button">
+                  {walletAddress
+                    ? `${walletAddress.slice(
+                        0,
+                        Math.floor((walletAddress.length - 8) / 2)
+                      )}...${walletAddress.slice(
+                        Math.ceil((walletAddress.length + 8) / 2)
+                      )}`
+                    : "Loading..."}
+                </button>
+                {/* <div className="wallet-dropdown-wrapper">
                   <button
                     className="atm-wallet-button"
                     onClick={() => setWalletDropdown(!walletDropdown)}
                   >
-                    0x9893.....65c148 <i className="bi bi-chevron-down"></i>
+                    {shortenAddress ? shortenAddress : "Connect Wallet"}{" "}
+                    <i className="bi bi-chevron-down"></i>
                   </button>
 
                   {walletDropdown && (
@@ -197,7 +268,7 @@ const Atmcard = () => {
                       </button>
                     </div>
                   )}
-                </div>
+                </div> */}
               </>
             )}
           </div>
@@ -206,7 +277,7 @@ const Atmcard = () => {
           <div className="atmcard-card">
             <div className="atmcard-card-header">
               <h4>Details</h4>
-              <span>
+              <span ref={dropdownRef}>
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
@@ -218,8 +289,8 @@ const Atmcard = () => {
                   </div>
                   {dropdownOpen && (
                     <div className="card-dropdown">
-                      <button>Disable Card</button>
-                      <button>Delete Card</button>
+                      <button id="dropbtn">Disable Card</button>
+                      <button id="dropbtn">Delete Card</button>
                     </div>
                   )}
                 </div>
@@ -227,25 +298,60 @@ const Atmcard = () => {
             </div>
             <div className="bonus-details">
               <p>
-                Card Holder: <span>{dummyCardData.cardHolder}</span>
-              </p>
-              <p>
-                Address: <span>{dummyCardData.address}</span>
-              </p>
-              <p>
-                Card Number:{" "}
+                Card Holder:{" "}
                 <span>
-                  {isVisible
-                    ? dummyCardData.cardNumber
-                    : `•••• •••• •••• ${dummyCardData.cardNumber.slice(-4)}`}
+                  {walletAddress?.toLowerCase() ===
+                  dummyCardData.linked_address.toLowerCase()
+                    ? dummyCardData.cardHolder
+                    : "•••• ••••••••"}
                 </span>
               </p>
               <p>
-                CVV: <span>{isVisible ? dummyCardData.cvv : "•••"}</span>
+                Address:{" "}
+                <span>
+                  {walletAddress?.toLowerCase() ===
+                  dummyCardData.linked_address.toLowerCase()
+                    ? `${dummyCardData.linked_address.slice(
+                        0,
+                        6
+                      )}...${dummyCardData.linked_address.slice(-4)}`
+                    : "••••••••••••••••••••"}
+                </span>
               </p>
-              <p>
-                Expiry Date: <span>{dummyCardData.expiry}</span>
-              </p>
+              {walletAddress?.toLowerCase() ===
+              dummyCardData.linked_address.toLowerCase() ? (
+                <>
+                  <p>
+                    Card Number:{" "}
+                    <span>
+                      {isVisible
+                        ? dummyCardData.cardNumber
+                        : `•••• •••• •••• ${dummyCardData.cardNumber.slice(
+                            -4
+                          )}`}
+                    </span>
+                  </p>
+                  <p>
+                    CVV:
+                    <span>{isVisible ? dummyCardData.cvv : "•••"}</span>
+                  </p>
+                  <p>
+                    Expiry Date: <span>{dummyCardData.expiry}</span>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Card Number: <span>•••• •••• •••• ••••</span>
+                  </p>
+                  <p>
+                    CVV: <span>•••</span>
+                  </p>
+                  <p>
+                    Expiry Date: <span>••/••</span>
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
@@ -256,7 +362,10 @@ const Atmcard = () => {
           />
         </div>
       </div>
-      <AtmTransactions />
+      <AtmTransactions
+        walletAddress={walletAddress}
+        linked_address={dummyCardData.linked_address}
+      />
     </>
   );
 };
