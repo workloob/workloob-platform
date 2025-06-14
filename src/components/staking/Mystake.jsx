@@ -133,7 +133,7 @@ const Mystake = () => {
 
   return (
     <>
-      <Toaster richColors />
+      {/* <Toaster richColors /> */}
       <div className="container mystake-card">
         <div className="row">
           <div className="col-md-4">

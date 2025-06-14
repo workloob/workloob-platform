@@ -57,7 +57,7 @@ const AtmTransactions = ({ walletAddress, linked_address }) => {
 
   return (
     <section className="tablecss">
-      <Toaster richColors position="top-right" />
+      {/* <Toaster richColors position="top-right" /> */}
       <h1>Card Transaction History</h1>
       <div className="tbl-content">
         <table cellPadding="0" cellSpacing="0" border="0">

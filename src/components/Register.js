@@ -18,6 +18,7 @@ const Register = () => {
   });
   const [roleSelected, setRoleSelected] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleRoleSelect = (role) => {
     setFormData({ ...formData, role });
@@ -35,6 +36,8 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     if (!formData.role) {
       toast.error("Please select your role!");
@@ -83,6 +86,8 @@ const Register = () => {
       } else {
         toast.error("Something went wrong!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,8 +181,8 @@ const Register = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-                <button id="optionbut" type="submit">
-                  Sign Up
+                <button id="optionbut" type="submit" disabled={loading}>
+                  {loading ? "Signing up..." : "Sign Up"}
                 </button>
               </form>
               <button

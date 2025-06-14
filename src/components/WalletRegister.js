@@ -19,6 +19,7 @@ const WalletRegister = () => {
   });
   const [roleSelected, setRoleSelected] = useState(false);
   const { walletType, setWalletType } = useWallet();
+  const [loading, setLoading] = useState(false);
 
   // Call both hooks unconditionally
   const web3 = useWeb3();
@@ -80,6 +81,8 @@ const WalletRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     if (!formData.role) {
       toast.error("Please select your role!");
       return;
@@ -119,6 +122,8 @@ const WalletRegister = () => {
       } else {
         toast.error("Something went wrong!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -250,8 +255,8 @@ const WalletRegister = () => {
                   </button>
                 </>
               )}
-              <button id="optionbut" type="submit">
-                Sign Up
+              <button id="optionbut" type="submit" disabled={loading}>
+                {loading ? "Signing up..." : "Sign Up"}
               </button>
             </form>
           )}
